@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>example2</title>
+  </head>
+  <body>
+    <div>
+          <button id="openbtn">
+            创建按钮
+          </button>
+          <script type="text/javascript">
+          //设计模式核心代码
+          var getSingle = function(fn) {
+            var result;
+            return function() {
+              return (result || (result = fn.apply(this,arguments)));
+            }
+          }
+          //业务代码之创建div代码
+          var createDiv = function() {
+            var div = document.createElement("div");
+            div.innerHTML = "我是创建对象";
+            console.warn('11');//多次点击只输出一次
+            return div;
+          }
+          var createSingleDiv = getSingle(createDiv);
+          //业务代码之触发事件
+          document.getElementById("openbtn").onclick = function() {
+            var div = createSingleDiv();
+            document.getElementsByTagName("body")[0].appendChild(div);
+          }
+          </script>
+        </div>
+  </body>
+  <script>
+    // 工厂模式
+    function newObj (name = '李四', age = 18) {
+      const OBJ = new Object()
+      OBJ.name = name
+      OBJ.age = age
+      return OBJ
+    }
+    console.log(newObj('张三', 20))
+    // 单列模式   只允许存在一个实例的模式
+    //-------在开始单例设计模式之前首先要搞清楚js之中的apply和call的作用。
+    // apply和call的直接作用首先是运行函数，其次是根据对象是否发生改变，产生借方法和用方法的情况。
+    // apply和call的区别是前者接收数组作为第二个参数，而call接手的是参数列表。
+    // 单例设计模式核心代码运用的是闭包，闭包可以保存作用域链，因此产生了静态变量的改变。因此产生了缓存的效果。
+    var Instance = (function(){
+      var obj;
+      return function(){
+          if(obj === undefined) obj = new Date();
+          return obj;
+      }
+    })();
+    var ibs = Instance();
+
+    // 观察者模式
+    // 又称发布订阅者模式，经典案例：事件监听，一个元素同时监听多个同类型事件，元素对象即为发布者，
+    // 每一个事件处理函数即为订阅者。
+    
+    // 策略模式
+    // 策略模式的定义是：定义一系列的算法，把它们一个个封装起来，并且使它们可以相互替换，
+    // 从而避免很多if语句，曾经学过最简单的策略模式雏形就是使用数组的方式解决传入数字得到对应星期几问题的算法。
+    // 比如公司的年终奖是根据员工的工资和绩效来考核的，绩效为A的人，年终奖为工资的4倍，绩效为B的人，年终奖为工资的3倍，绩效为C的人，年终奖为工资的2倍
+    var obj = {
+      "A": function(salary) {
+          return salary * 4
+      },
+      "B" : function(salary) {
+          return salary * 3
+      },
+      "C" : function(salary) {
+          return salary * 2
+      }
+    }
+    var calculateBouns =function(level,salary) {
+        return obj[level](salary)
+    }
+    console.log(calculateBouns('A',10000)); // 40000
+    
+
+    // 代理模式
+    // 代理模式（Proxy），为其他对象提供一种代理以控制对这个对象的访问，为了不暴露执行对象的部分代码
+    //三个对象
+    //用户委托快捷方式打开exe
+    //为了不暴露执行对象的部分代码
+    //男孩委托快递小哥给女孩送礼物
+    //三个对象
+    //用户委托快捷方式打开exe
+    //为了不暴露执行对象的部分代码
+    //男孩委托快递小哥给女孩送礼物
+    var girl = function(name){
+        this.name = name;
+    }
+    //隐藏复杂，不愿意修改的的方法
+    var boy = function(girl){
+        this.girl = girl;
+        this.send = function(gift){
+            alert("你好："+this.girl.name+",给你一个"+gift);
+        }
+    }
+    var proxyBro = function(girl){
+        this.send = function(gift){
+            new boy(girl).send(gift);
+        }
+    }
+    var pro = new proxyBro(new girl("Lisa"));
+    pro.send("么么哒");
+    pro.send("玫瑰花");
+    
+    var pro1 = new proxyBro(new girl("美女"));
+    pro1.send("跑车")
+    
+  </script>  
+</html>
